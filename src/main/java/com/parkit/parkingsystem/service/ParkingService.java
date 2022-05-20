@@ -101,6 +101,8 @@ public class ParkingService {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+            boolean isReturningCustomer = ticketDAO.recurringCustomer(vehicleRegNumber);
+            ticket.setRecurringCustomer(isReturningCustomer);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);

@@ -86,4 +86,25 @@ public class TicketDAO {
         }
         return false;
     }
+
+    public boolean recurringCustomer(String registrationNumber) {
+        Connection con = null;
+        boolean result=false;
+
+        try {
+            con = dataBaseConfig.getConnection();
+            String query = "SELECT COUNT(*) AS NB FROM ticket WHERE VEHICLE_REG_NUMBER = '" + registrationNumber + "'";
+            PreparedStatement ps = con.prepareStatement(query);
+            ResultSet rs = ps.executeQuery(query);
+            if(rs.next()) {
+                result = rs.getInt("NB") >= 2;
+            }
+            ps.close();
+        } catch (Exception e) {
+            logger.error("Error checking if customer recurrent",e);
+        } finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return result;
+    }
 }
