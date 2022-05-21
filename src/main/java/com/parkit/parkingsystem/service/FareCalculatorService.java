@@ -28,6 +28,7 @@ public class FareCalculatorService {
             default: throw new IllegalArgumentException("Unkown Parking Type");
         }
         if (ticket.isRecurringCustomer()){
+            System.out.println("Thank you for coming again");
             ticket.setPrice(ticket.getPrice() * 0.95);
         }
     }

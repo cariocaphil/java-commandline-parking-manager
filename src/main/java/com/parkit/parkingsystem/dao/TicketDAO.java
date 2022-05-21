@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.dao;
 
+import static com.parkit.parkingsystem.constants.DBConstants.GET_COUNT_OF_PREVIOUS_TICKETS;
+
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -93,9 +95,9 @@ public class TicketDAO {
 
         try {
             con = dataBaseConfig.getConnection();
-            String query = "SELECT COUNT(*) AS NB FROM ticket WHERE VEHICLE_REG_NUMBER = '" + registrationNumber + "'";
-            PreparedStatement ps = con.prepareStatement(query);
-            ResultSet rs = ps.executeQuery(query);
+            PreparedStatement ps = con.prepareStatement(GET_COUNT_OF_PREVIOUS_TICKETS);
+            ps.setString(1, registrationNumber);
+            ResultSet rs = ps.executeQuery();
             if(rs.next()) {
                 result = rs.getInt("NB") >= 2;
             }
