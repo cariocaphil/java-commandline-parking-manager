@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import static com.parkit.parkingsystem.constants.Fare.FREE_PARKING_TIME_PERIOD_IN_MINUTES;
+
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -17,7 +19,7 @@ public class FareCalculatorService {
         long duration = (outHour - inHour)  / 1000 / 60;
         System.out.println("duration of parking " + duration + " minutes");
 
-        if (duration <= 30) {
+        if (duration <= FREE_PARKING_TIME_PERIOD_IN_MINUTES) {
             ticket.setPrice(0);
         }
         else {
