@@ -5,6 +5,7 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+import java.util.Calendar;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,9 +113,9 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCarWithLessThan31MinutesParkingTime(){
-        Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (  29 * 60 * 1000) ); // 29 should give 0 parking fare
-        Date outTime = new Date();
+        // 10 minutes should give 0 parking fare
+        Date inTime = generateDate(17,0,0);
+        Date outTime = generateDate(17,10,0);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
         ticket.setInTime(inTime);
@@ -150,6 +151,14 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+    }
+
+    // helper method
+    private Date generateDate(int hour, int minutes, int seconds) {
+        // creating a Calendar object
+        Calendar c1 = Calendar.getInstance();
+        c1.set(2022,05,21,hour,minutes,seconds);
+       return c1.getTime();
     }
 
 }

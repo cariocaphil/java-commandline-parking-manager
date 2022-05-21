@@ -14,7 +14,8 @@ public class FareCalculatorService {
         long outHour = ticket.getOutTime().getTime();
 
         // duration in minutes
-        long duration = (outHour - inHour)  /1000 / 60;
+        long duration = (outHour - inHour)  / 1000 / 60;
+        System.out.println("duration of parking " + duration + " minutes");
 
         if (duration <= 30) {
             ticket.setPrice(0);
