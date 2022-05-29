@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.dao;
 
+import static com.parkit.parkingsystem.constants.DBConstants.GET_COUNT_OF_PREVIOUS_TICKETS;
+
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -85,5 +87,26 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
         }
         return false;
+    }
+
+    public boolean recurringCustomer(String registrationNumber) {
+        Connection con = null;
+        boolean result=false;
+
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(GET_COUNT_OF_PREVIOUS_TICKETS);
+            ps.setString(1, registrationNumber);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                result = rs.getInt("NB") >= 2;
+            }
+            ps.close();
+        } catch (Exception e) {
+            logger.error("Error checking if customer recurrent",e);
+        } finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return result;
     }
 }

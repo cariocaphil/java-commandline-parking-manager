@@ -153,12 +153,26 @@ public class FareCalculatorServiceTest {
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
+    @Test
+    public void calculateFareCarWithMoreThan30MinForReturningCustomer(){
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis() - (52 * 60 * 1000));
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setRecurringCustomer(true);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals((0.95 * (52 * Fare.CAR_RATE_PER_HOUR/60)), ticket.getPrice());
+    }
+
     // helper method
     private Date generateDate(int hour, int minutes, int seconds) {
         // creating a Calendar object
         Calendar c1 = Calendar.getInstance();
         c1.set(2022,05,21,hour,minutes,seconds);
-       return c1.getTime();
+        return c1.getTime();
     }
 
 }
