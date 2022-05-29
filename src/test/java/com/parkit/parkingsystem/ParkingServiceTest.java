@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,6 +57,14 @@ public class ParkingServiceTest {
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    public void throwExceptionWhenParkingTypeIsNull() {
+
+        when(inputReaderUtil.readSelection()).thenReturn(3);
+
+        assertThrows(Exception.class, () -> parkingService.getNextParkingNumberIfAvailable().getParkingType());
     }
 
 }
