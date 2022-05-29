@@ -5,6 +5,7 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+import java.util.Calendar;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,6 +112,34 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
+    public void calculateFareCarWithLessThan31MinutesParkingTime(){
+        // 10 minutes should give 0 parking fare
+        Date inTime = generateDate(17,0,0);
+        Date outTime = generateDate(17,10,0);
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( (0 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+    }
+
+    @Test
+    public void calculateFareCarWithMoreThan30MinutesParkingTime(){
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  31 * 60 * 1000) );
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( (31 * Fare.CAR_RATE_PER_HOUR/60) , ticket.getPrice());
+    }
+
+    @Test
     public void calculateFareCarWithMoreThanADayParkingTime(){
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (  24 * 60 * 60 * 1000) );//24 hours parking time should give 24 * parking fare per hour
@@ -136,6 +165,14 @@ public class FareCalculatorServiceTest {
         ticket.setRecurringCustomer(true);
         fareCalculatorService.calculateFare(ticket);
         assertEquals((0.95 * (52 * Fare.CAR_RATE_PER_HOUR/60)), ticket.getPrice());
+    }
+
+    // helper method
+    private Date generateDate(int hour, int minutes, int seconds) {
+        // creating a Calendar object
+        Calendar c1 = Calendar.getInstance();
+        c1.set(2022,05,21,hour,minutes,seconds);
+        return c1.getTime();
     }
 
 }
